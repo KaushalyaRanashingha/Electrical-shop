@@ -29,7 +29,7 @@ const contactUs = () => {
         <div className="info-card">
           <FaMapMarkerAlt className="icon" />
           <h3>Visit Us</h3>
-          <p>123 Power Street, New York, NY</p>
+          <p>123 Power Street,Nugegoda</p>
         </div>
 
         <div className="info-card">
@@ -77,4 +77,5 @@ const contactUs = () => {
 };
 
 export default contactus;
+
 
