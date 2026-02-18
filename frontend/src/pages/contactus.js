@@ -17,7 +17,7 @@ const contactUs = () => {
         <div className="info-card">
           <FaPhoneAlt className="icon" />
           <h3>Call Us</h3>
-          <p>+1 234 567 890</p>
+          <p>+ 94 777 560 890</p>
         </div>
 
         <div className="info-card">
@@ -77,3 +77,4 @@ const contactUs = () => {
 };
 
 export default contactus;
+
