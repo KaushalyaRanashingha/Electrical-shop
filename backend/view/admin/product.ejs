@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NetTec Electronic | Admin Products</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode: 'class' }
+  </script>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+
+  <!-- Navbar -->
+  <nav class="bg-white dark:bg-gray-800 shadow p-4 flex justify-between items-center">
+    <div class="flex items-center space-x-4">
+      <img src="/logo.png" alt="NetTec Logo" class="h-8 w-8">
+      <span class="font-bold text-xl">NetTec Electronic</span>
+    </div>
+    <div class="flex items-center space-x-4">
+      <button id="darkToggle" class="p-2 rounded bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600">Toggle Dark/Light</button>
+      <div class="flex items-center space-x-2 cursor-pointer">
+        <img src="/user.jpg" alt="User" class="h-8 w-8 rounded-full">
+        <span>Admin</span>
+      </div>
+    </div>
+  </nav>
+
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white dark:bg-gray-800 shadow-md p-4 hidden md:block">
+      <ul class="space-y-2">
+        <li><a href="/admin/dashboard" class="block p-2 rounded hover:bg-blue-500 hover:text-white">Dashboard</a></li>
+        <li><a href="/admin/orders" class="block p-2 rounded hover:bg-blue-500 hover:text-white">Orders</a></li>
+        <li><a href="/admin/product" class="block p-2 rounded bg-blue-500 text-white">Products</a></li>
+        <li><a href="/admin/customers" class="block p-2 rounded hover:bg-blue-500 hover:text-white">Customers</a></li>
+        <li><a href="/admin/reports" class="block p-2 rounded hover:bg-blue-500 hover:text-white">Reports</a></li>
+        <li><a href="/admin/settings" class="block p-2 rounded hover:bg-blue-500 hover:text-white">Settings</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6">
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold">Products</h1>
+        <button id="addProductBtn" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Add New Product</button>
+      </div>
+
+      <!-- Filters -->
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4 space-y-2 md:space-y-0">
+        <input type="text" id="searchInput" placeholder="Search Products..." class="p-2 border rounded w-full md:w-1/3">
+        <div class="flex space-x-2">
+          <select id="categoryFilter" class="p-2 border rounded">
+            <option value="">All Categories</option>
+            <% if (categories && categories.length > 0) { %>
+              <% categories.forEach(cat => { %>
+                <option value="<%= cat %>"><%= cat %></option>
+              <% }) %>
+            <% } %>
+          </select>
+          <select id="statusFilter" class="p-2 border rounded">
+            <option value="">All Status</option>
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Product Table -->
+      <div class="overflow-x-auto bg-white dark:bg-gray-800 shadow rounded-lg">
+        <table class="min-w-full">
+          <thead class="bg-gray-200 dark:bg-gray-700">
+            <tr>
+              <th class="p-3 text-left">ID</th>
+              <th class="p-3 text-left">Name</th>
+              <th class="p-3 text-left">Category</th>
+              <th class="p-3 text-left">Price</th>
+              <th class="p-3 text-left">Stock</th>
+              <th class="p-3 text-left">Status</th>
+              <th class="p-3 text-left">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="productTable">
+            <% if (products && products.length > 0) { %>
+              <% products.forEach(product => { %>
+                <tr class="<%= product.stock < 10 ? 'bg-red-100 dark:bg-red-700' : '' %> border-b">
+                  <td class="p-3"><%= product.id %></td>
+                  <td class="p-3"><%= product.name %></td>
+                  <td class="p-3"><%= product.category %></td>
+                  <td class="p-3">Rs. <%= product.price %></td>
+                  <td class="p-3"><%= product.stock %></td>
+                  <td class="p-3"><%= product.status %></td>
+                  <td class="p-3 space-x-2">
+                    <button onclick="openEditModal(<%= product.id %>)" class="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">Edit</button>
+                    <a href="/admin/product/delete/<%= product.id %>" class="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600">Delete</a>
+                  </td>
+                </tr>
+              <% }) %>
+            <% } else { %>
+              <tr>
+                <td colspan="7" class="text-center p-4">No products available.</td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <!-- Add/Edit Product Modal -->
+  <div id="productModal" class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center">
+    <div class="bg-white dark:bg-gray-800 rounded-lg w-full max-w-lg p-6 relative">
+      <h2 id="modalTitle" class="text-xl font-bold mb-4">Add New Product</h2>
+      <form id="productForm" action="/admin/product/add" method="POST" enctype="multipart/form-data" class="space-y-4">
+        <input type="hidden" name="id" id="productId">
+        <input type="text" name="name" id="productName" placeholder="Product Name" class="w-full p-2 border rounded" required>
+        <input type="text" name="category" id="productCategory" placeholder="Category" class="w-full p-2 border rounded" required>
+        <input type="number" name="price" id="productPrice" placeholder="Price" class="w-full p-2 border rounded" required>
+        <input type="number" name="stock" id="productStock" placeholder="Stock Quantity" class="w-full p-2 border rounded" required>
+        <textarea name="description" id="productDescription" placeholder="Description" class="w-full p-2 border rounded"></textarea>
+        <input type="file" name="image" id="productImage" class="w-full">
+        <div class="flex items-center space-x-2">
+          <label>Status:</label>
+          <input type="checkbox" name="status" id="productStatus" class="toggle-checkbox">
+          <span id="statusLabel">Active</span>
+        </div>
+        <div class="flex justify-end space-x-2">
+          <button type="button" onclick="closeModal()" class="px-4 py-2 bg-gray-300 dark:bg-gray-700 rounded hover:bg-gray-400 dark:hover:bg-gray-600">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const body = document.body;
+    const darkToggle = document.getElementById('darkToggle');
+    darkToggle.addEventListener('click', () => body.classList.toggle('dark'));
+
+    const modal = document.getElementById('productModal');
+    const addBtn = document.getElementById('addProductBtn');
+    const modalTitle = document.getElementById('modalTitle');
+    const productForm = document.getElementById('productForm');
+
+    addBtn.addEventListener('click', () => {
+      modalTitle.textContent = 'Add New Product';
+      productForm.action = '/admin/product/add';
+      productForm.reset();
+      modal.classList.remove('hidden');
+    });
+
+    function closeModal() {
+      modal.classList.add('hidden');
+    }
+
+    function openEditModal(id) {
+      modalTitle.textContent = 'Edit Product';
+      const product = <%- JSON.stringify(products || []) %>.find(p => p.id === id);
+      if (!product) return;
+      document.getElementById('productId').value = product.id;
+      document.getElementById('productName').value = product.name;
+      document.getElementById('productCategory').value = product.category;
+      document.getElementById('productPrice').value = product.price;
+      document.getElementById('productStock').value = product.stock;
+      document.getElementById('productDescription').value = product.description || '';
+      document.getElementById('productStatus').checked = product.status === 'Active';
+      productForm.action = '/admin/product/edit/' + id;
+      modal.classList.remove('hidden');
+    }
+
+    const statusToggle = document.getElementById('productStatus');
+    const statusLabel = document.getElementById('statusLabel');
+    statusToggle.addEventListener('change', () => {
+      statusLabel.textContent = statusToggle.checked ? 'Active' : 'Inactive';
+    });
+  </script>
+</body>
+</html>

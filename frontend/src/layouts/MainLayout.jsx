@@ -1,11 +1,11 @@
 import { Navbar } from "../components/Navbar";
-import { HeroSection } from "../components/HeroSection";
+import HeroSection from "../components/HeroSection";
+
 import { CategorySection } from "../components/CategorySection";
 import { FeaturedProducts } from "../components/FeaturedProducts";
 import { WhyChooseUs } from "../components/WhyChooseUs";
 import { ContactSection } from "../components/ContactSection";
 import { Footer } from "../components/Footer";
-
 
 export default function MainLayout() {
   return (
@@ -14,7 +14,12 @@ export default function MainLayout() {
       <main>
         <HeroSection />
         <CategorySection />
-        <FeaturedProducts />
+
+        {/* ✅ Add id for scrolling */}
+        <section id="featured-products">
+          <FeaturedProducts />
+        </section>
+
         <WhyChooseUs />
         <ContactSection />
       </main>

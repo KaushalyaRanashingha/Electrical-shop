@@ -66,7 +66,7 @@ export function FeaturedProducts() {
             </h2>
             <p>Hand-picked selection of our best-selling electronics and electrical supplies.</p>
           </div>
-          <a href="#" className="view-all">View All Products →</a>
+          <a href="/products" className="view-all">View All Products →</a>
         </div>
 
         {/* Products Grid */}

@@ -1,9 +1,19 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { ShieldCheck, Truck, Lock, ArrowRight, Zap } from "lucide-react";
-import "./HeroSection.css"; 
+import "./HeroSection.css";
 
-export function HeroSection() {
+function HeroSection() {
+  const navigate = useNavigate();
+
+  const handleScroll = () => {
+    const section = document.getElementById("featured-products");
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <section className="hero-section">
       <div className="hero-bg-image"></div>
@@ -28,15 +38,30 @@ export function HeroSection() {
 
           <p className="hero-paragraph">
             Your trusted destination for electrical and electronic products at
-            affordable prices. From industrial equipment to smart home solutions,
-            we have it all.
+            affordable prices.
           </p>
 
+          {/* ✅ Buttons Fixed */}
           <div className="hero-buttons">
-            <button className="btn-primary">
-              Shop Now <ArrowRight size={18} />
+            <button
+  className="btn-primary"
+  onClick={() => {
+    const section = document.getElementById("featured-products");
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
+  }}
+>
+  Shop Now <ArrowRight size={18} />
+</button>
+
+
+            <button
+              className="btn-secondary"
+              onClick={() => navigate("/products")}
+            >
+              View Products
             </button>
-            <button className="btn-secondary">View Products</button>
           </div>
 
           <div className="hero-trust-grid">
@@ -47,6 +72,7 @@ export function HeroSection() {
                 <p>100% Genuine Products</p>
               </div>
             </div>
+
             <div className="trust-item">
               <Truck size={28} color="#ffec1f" />
               <div>
@@ -54,6 +80,7 @@ export function HeroSection() {
                 <p>Island-wide Shipping</p>
               </div>
             </div>
+
             <div className="trust-item">
               <Lock size={28} color="#ffec1f" />
               <div>
@@ -62,10 +89,13 @@ export function HeroSection() {
               </div>
             </div>
           </div>
+
         </motion.div>
       </div>
-      
+
       <div className="hero-glow"></div>
     </section>
   );
 }
+
+export default HeroSection;
